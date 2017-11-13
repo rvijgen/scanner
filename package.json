@@ -1,0 +1,17 @@
+{
+  "name": "scanner",
+  "version": "1.0.0",
+  "description": "Wifi Scanner",
+  "main": "test.js",
+  "scripts": {
+    "test": "sudo node test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "exec": "^0.2.1",
+    "progress": "^1.1.8",
+    "spawn-sync": "^1.0.15"
+  },
+  "devDependencies": {}
+}

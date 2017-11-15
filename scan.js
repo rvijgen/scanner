@@ -2,20 +2,50 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var interface = 'en1'
+
 channel = 1;
 var timer;
-foo = new cmd_exec('airport', ['en1', 'sniff', channel])
+foo = new cmd_exec('airport', [interface, 'sniff', channel])
 scanChannel()
 
 var row = Array();
 var historic = Array();
+var channelData = Array();
+
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', function(socket){
+  //console.log('a user connected');
+  socket.on('disconnect', function(){
+    //console.log('user disconnected');
+  });
+});
+
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    console.log('message: ' + msg);
+    io.emit('chat message', msg);
+  });
+});
+
+http.listen(8888,"localhost", function(){
+  console.log('emitting from localhost:8888');
+});
+
+
+
+
 
 function scanChannel() {
 
     //console.log('================================================================')
     //console.log('start')
     var spawn = require('child_process').spawn
-    var ts = spawn('tshark', ['-i', 'en1', '-I'], { stdio: ['pipe', 'pipe', 'pipe'] });
+    var ts = spawn('tshark', ['-i', interface, '-I'], { stdio: ['pipe', 'pipe', 'pipe'] });
 
 
     var start = new Date().getTime();
@@ -23,17 +53,20 @@ function scanChannel() {
         ts.stdout.on('data', function(data) {
 
             var str = data.toString(),
-                lines = str.split('\n');
+            lines = str.split('\n');
 
 
             for (var i = 0; i < lines.length; i++) {
                 var scr = '';
                 var dst = '';
                 // Process the line, noting it might be incomplete.
-                console.log(lines[i]);
+                
                 //value = lines[i].split(',');
                 //console.log(value)
+                channelData.push(lines[i])
             }
+            
+            
         });
 
     }
@@ -47,16 +80,25 @@ function scanChannel() {
 
 
     timer = setTimeout(function() {
-        //console.log('kill');
+        // kill scanner
         if (ts != null) ts.kill();
         ts = null
+
+
+        console.log('channel '+channel+' '+channelData.length+' logs');
+        io.emit('boop', {channel, channelData});
+        // clear channel data
+        channelData = Array();
+
+
+        // up channel
         channel++
 
         if (channel > 13) {
             channel = 1;
         }
 
-        foo = new cmd_exec('airport', ['en1', 'channel', channel],
+        foo = new cmd_exec('airport', [interface, 'channel', channel],
             function(me, data) { me.stdout += data.toString(); },
             function(me) { me.exit = 1; }
         );

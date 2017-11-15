@@ -4,7 +4,10 @@ OSX
 run: sudo node scan
 
 =======================================================================================
-Outputs per channel package count by default, uncomment line 26 for raw tshark output.
+Scans each channel for all data and outputs via Socket.IO
+Outputs channel and log line count in terminal.
+
+Set Wifi Interface address on line 5;
 
 Requires T-Shark:
 brew install wireshark

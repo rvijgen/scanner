@@ -1,0 +1,16 @@
+<head>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+</head>
+<body>
+	ok
+	<script type="text/javascript">
+		socket = io('http://localhost:8888');
+	    socket.on('boop', function(msg) {
+        	//$('#messages').append($('<li>').text(msg));
+        	var line = msg
+        	// var tabs = line.split('\t');
+        	console.log(line)
+        	
+    	});
+	</script>
+</body>

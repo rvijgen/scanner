@@ -87,7 +87,8 @@ function scanChannel() {
                     'noise': noise,
                     'signal': signal,
                     'type': type,
-                    'subType': subType
+                    'subType': subType,
+                    'channel':channel
                 }]
 
                 //console.log('a'+block)

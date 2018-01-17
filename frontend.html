@@ -1,16 +1,114 @@
 <head>
-	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 </head>
+
 <body>
-	ok
-	<script type="text/javascript">
-		socket = io('http://localhost:8888');
-	    socket.on('boop', function(msg) {
-        	//$('#messages').append($('<li>').text(msg));
-        	var line = msg
-        	// var tabs = line.split('\t');
-        	console.log(line)
-        	
-    	});
-	</script>
+    ok
+    <script type="text/javascript">
+    var channels = new Array();
+    var sources = new Array();
+    //var globalSources = new Array();
+
+    var channelCounter = 0;
+    socket = io('http://localhost:8888');
+    socket.on('boop', function(msg) {
+
+
+        //$('#messages').append($('<li>').text(msg));
+
+
+
+        channelNum = msg.channel
+
+        var channelData = msg.channelData
+
+        // for (var i = 0; i < channel.length; i++) {
+        //     var packet = channel[i][0];
+        //     var source = packet.source
+        //     var dest = packet.dest
+        //     var ssid = packet.ssid
+        //     var frequency = packet.frequency
+        //     var noise = packet.noise
+        //     var signal = packet.signal
+        //     var type = packet.type
+        //     var subType = packet.subType
+        //     var ch = packet.channel
+
+        //     //console.log(source)
+
+        // }
+        channels[channelNum] = channelData
+        // var tabs = line.split('\t');
+
+
+        buildSources()
+        displaySources()
+        //console.log(sources)
+        //displaySources()
+
+    });
+
+
+    function buildSources() {
+        sources = new Array();
+        for (var i = 0; i < channels.length; i++) {
+            var currentChannel = channels[i];
+            if (currentChannel != undefined) {
+
+                for (var j = 0; j < currentChannel.length; j++) {
+                    var source = currentChannel[j][0].source;
+                    //console.log(source)
+                    if (source != "") {
+                    	var exists = sourceExists(source)
+                    	//console.log(exists)
+                        if (exists!=false) {
+                            //source bestaat al
+                            
+                            sources[exists][0].packet.push(currentChannel[j][0])
+                            console.log(sources[exists][0].packet.length)
+                        } else {
+                            //source bestaat nog niet
+                            newSource = [{ source: source, packet: currentChannel[j] }]
+                            sources.push(newSource)
+                        }
+                    }
+
+
+                }
+            }
+
+        }
+    }
+
+
+
+
+    function displaySources() {
+        var list = new Array();
+        var listText = '';
+        for (var i = 0; i < sources.length; i++) {
+        	console.log(sources[i][0].packet.length)
+            list.push({'name':sources[i][0].source,'number':sources[i][0].packet.length})
+        }
+        //list.sort();
+        for (var i = 0; i < list.length; i++) {
+            listText += list[i].name + ' '+list[i].number+'<br/>'
+        }
+        document.getElementById("sourceList").innerHTML = listText
+
+    }
+
+    function sourceExists(source) {
+        var exists = false
+        for (var i = 0; i < sources.length; i++) {
+        	//console.log(sources[i][0])
+            if (sources[i][0].source == source){
+            	exists = true
+            	return i
+            }
+        }
+        return exists;
+    }
+    </script>
+    <div id="sourceList"></div>
 </body>

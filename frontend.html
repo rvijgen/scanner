@@ -1,5 +1,5 @@
 <head>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://localhost:8888/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -63,7 +63,7 @@
                     	//console.log(exists)
                         if (exists!=false) {
                             //source bestaat al
-                            
+
                             sources[exists][0].packet.push(currentChannel[j][0])
                             console.log(sources[exists][0].packet.length)
                         } else {

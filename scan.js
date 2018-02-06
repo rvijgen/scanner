@@ -45,7 +45,7 @@ function scanChannel() {
 	//console.log('start')
 	//tshark -i en1 -I -T fields -E separator=* -e wlan.sa_resolved -e wlan.da_resolved -e wlan_mgt.ssid -e wlan_radio.frequency -e wlan_radio.noise_percentage -e wlan_radio.signal_percentage
 	var spawn = require('child_process').spawn
-	var ts = spawn('tshark -i ' + interface + ' -I -T fields -E separator=* -e wlan.sa_resolved -e wlan.da_resolved -e wlan.da_resolved -e wlan_radio.frequency -e wlan_radio.noise_dbm -e wlan_radio.signal_dbm -e wlan.fc.type_subtype -e wlan.fc.type', { shell: true });
+	var ts = spawn('tshark -i ' + interface + ' -I -T fields -E separator=* -e wlan.sa_resolved -e wlan.da_resolved -e wlan.da_resolved -e wlan_radio.frequency -e wlan_radio.noise_dbm -e wlan_radio.signal_dbm -e wlan.fc.type_subtype -e wlan.fc.type -e frame.time_epoch -e frame.len', { shell: true });
 
 	var start = new Date().getTime();
 	if (ts.stdout != null) {
@@ -64,6 +64,8 @@ function scanChannel() {
 				var signal = '';
 				var type = '';
 				var subType = '';
+				var timestamp = '';
+				var length = '';
 
 				var line = lines[i].split("*");
 				// Process the line, noting it might be incomplete.
@@ -76,6 +78,8 @@ function scanChannel() {
 				signal = line[5]
 				subType = line[6]
 				type = line[7]
+				timestamp = line[8]
+				length = line[9]
 
 				var block = [{
 					'source': source,
@@ -86,7 +90,9 @@ function scanChannel() {
 					'signal': signal,
 					'type': type,
 					'subType': subType,
-					'channel':channel
+					'channel':channel,
+					'timestamp':timestamp,
+					'length':length
 				}]
 
 				//console.log('a'+block)

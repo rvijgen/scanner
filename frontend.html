@@ -21,7 +21,7 @@
         channelNum = msg.channel
 
         var channelData = msg.channelData
-
+        console.log(channelData)
         // for (var i = 0; i < channel.length; i++) {
         //     var packet = channel[i][0];
         //     var source = packet.source
@@ -65,7 +65,7 @@
                             //source bestaat al
 
                             sources[exists][0].packet.push(currentChannel[j][0])
-                            console.log(sources[exists][0].packet.length)
+                            //console.log(sources[exists][0].packet.length)
                         } else {
                             //source bestaat nog niet
                             newSource = [{ source: source, packet: currentChannel[j] }]
@@ -87,7 +87,7 @@
         var list = new Array();
         var listText = '';
         for (var i = 0; i < sources.length; i++) {
-        	console.log(sources[i][0].packet.length)
+        	//console.log(sources[i][0].packet.length)
             list.push({'name':sources[i][0].source,'number':sources[i][0].packet.length})
         }
         //list.sort();

@@ -30,7 +30,7 @@ function next() {
 	setTimeout(() => {
 		console.log(`Captured ${nPackets} packets on channel ${channel + 1}`);
 
-		if (nPackets < 100) {
+		if (nPackets < 200) {
 			channel++;
 			channel %= 13;
 

@@ -1,7 +1,7 @@
 const io = require('socket.io')(8888);
 const crypto = require('crypto');
 
-let channel = 6;
+let channel = 11;
 
 let sniffer = execute('/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport', ['en0', 'sniff', channel]);
 
@@ -32,18 +32,19 @@ function processBuffer(buffer) {
 		let packetData = line.split('*');
 
 		let packet = {
-			source: null,
-			destination: null,
+			source: {name:"", id:""},
+			destination: {name:"", id:""},
+			ssid: {name:"", id:""},
 			frequency: parseInt(packetData[2]),
 			noise: parseInt(packetData[3]),
 			signal: parseInt(packetData[4]),
 			subtype: parseInt(packetData[5]),
 			type: parseInt(packetData[6]),
 			timestamp: Math.round(parseFloat(packetData[7]) * 1000),
-			ssid: null,
 			duration: parseInt(packetData[9]) / 1000,
 			size: parseInt(packetData[10]),
-			channel: parseInt(packetData[11])
+			channel: parseInt(packetData[11]),
+			snr: 0
 		};
 
 		if (packet.size && packet.signal) {
